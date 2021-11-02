@@ -1,7 +1,6 @@
 package com.example.lab6;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -25,8 +24,6 @@ public class MainActivity extends FragmentActivity {
     private GoogleMap mMap;
     private GoogleMap currentLocation;
 
-    public MainActivity() {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +63,7 @@ public class MainActivity extends FragmentActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            //return;
+
         }
         else {
             mFusedLocationProviderClient.getLastLocation().addOnCompleteListener(this,
@@ -78,14 +75,15 @@ public class MainActivity extends FragmentActivity {
                                             mLastKnownLocation.getLongitude()),
                                     mDestinationLatLng
                             ));
+
+                            LatLng mKnownLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_map);
+                            mapFragment.getMapAsync(googleMap -> {
+                                currentLocation = googleMap;
+                                //code to display marker
+                                googleMap.addMarker(new MarkerOptions().position(mKnownLocation).title("Marker"));
+                            });
                         }
-                    LatLng mKnownLocation = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_map);
-                    mapFragment.getMapAsync(googleMap -> {
-                        currentLocation = googleMap;
-                        //code to display marker
-                        googleMap.addMarker(new MarkerOptions().position(mKnownLocation).title("Marker"));
-                    });
             });
         }
     }
